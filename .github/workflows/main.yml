@@ -1,0 +1,34 @@
+name: COBOL Check Automation
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  cobol-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Java
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+
+    - name: Install Zowe CLI
+      run: npm install -g @zowe/cli@latest
+
+    - name: Setup Mainframe Environment and Upload COBOL Check
+      env:
+        ZOWE_OPT_HOST: 204.90.115.200
+        ZOWE_OPT_PORT: 10443
+        ZOWE_OPT_USER: ${{ secrets.ZOWE_USERNAME }}
+        ZOWE_OPT_PASSWORD: ${{ secrets.ZOWE_PASSWORD }}
+        ZOWE_OPT_REJECT_UNAUTHORIZED: false
+        ZOWE_USERNAME: ${{ secrets.ZOWE_USERNAME }}
+        ZOWE_PASSWORD: ${{ secrets.ZOWE_PASSWORD }}
+      run: |
+        chmod +x .github/scripts/zowe_operations.sh
+        .github/scripts/zowe_operations.sh
